@@ -11,6 +11,10 @@ group = 'hexlet.code'
 version = '1.0-SNAPSHOT'
 sourceCompatibility = '17'
 
+compileJava {
+	options.release = 16
+}
+
 repositories {
 	mavenCentral()
 }
