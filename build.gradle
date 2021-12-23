@@ -4,8 +4,8 @@ plugins {
 	id 'application'
 	id 'checkstyle'
 	id 'jacoco'
-	id 'io.ebean' version '12.11.5'
-	id 'org.liquibase.gradle' version '2.0.4'
+	id 'com.github.ben-manes.versions' version '0.38.0'
+	id 'org.liquibase.gradle' version '2.1.0'
 }
 
 group = 'hexlet.code'
@@ -46,9 +46,10 @@ dependencies {
 
 	liquibaseRuntime(
 			sourceSets.main.output,
-			'org.liquibase:liquibase-core:4.6.1',
+			'org.liquibase:liquibase-core:4.5.0',
 			'org.liquibase.ext:liquibase-hibernate5:4.5.0',
-			'org.springframework.boot:spring-boot-starter-data-jpa'
+			'org.springframework.boot:spring-boot-starter-data-jpa',
+			'info.picocli:picocli:4.6.1'
 	)
 
 	runtimeOnly (
@@ -77,9 +78,9 @@ liquibase {
 		main {
 			changeLogFile 'src/main/resources/db/changelog/changelog-master.xml'
 			url 'jdbc:h2:./taskManager'
-			username ''
-			password ''
-			referenceUrl 'hibernate:spring:hexlet.code.model.entity' +
+			username 'sa'
+			password 'sa'
+			referenceUrl 'hibernate:spring:hexlet.code.app.model.' +
 					'?dialect=org.hibernate.dialect.H2Dialect' +
 					'&hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy'
 		}

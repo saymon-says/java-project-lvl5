@@ -1,4 +1,4 @@
-package hexlet.code.model;
+package hexlet.code.app.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -10,25 +10,24 @@ import org.hibernate.annotations.CreationTimestamp;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
+import static javax.persistence.GenerationType.AUTO;
 import static javax.persistence.TemporalType.TIMESTAMP;
 
 @Entity
-@Table(name = "users")
 @Getter
 @Setter
+@Table(name = "users")
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = AUTO)
     private Long id;
 
     @NotBlank
@@ -44,5 +43,9 @@ public class User {
     @CreationTimestamp
     @Temporal(TIMESTAMP)
     private Date createdAt;
+
+    public User(final Long id) {
+        this.id = id;
+    }
 
 }
