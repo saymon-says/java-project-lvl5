@@ -1,12 +1,12 @@
 users:
-  - id: 1
-    firstName: Sam
-    lastName: Serdyk
+  - id: 100
+    first_name: Sam
+    last_name: Serdyk
     email: sam@gmail.com
     password: $2a$12$lP1HdpYa4yT./wnilPzf0OoxaVHJunEkkxw4SwkYL5obPjq.fG8Xy
 
-  - id: 2
-    firstName: Adnrey
-    lastName: Andrson
+  - id: 200
+    first_name: Adnrey
+    last_name: Andrson
     email: andrey@mail.ru
     password: $2a$12$aNS5pdHzAgOcYBwL3dj/neih15F33OqNAP7CvGNRnxOk0nC6FJSr.
