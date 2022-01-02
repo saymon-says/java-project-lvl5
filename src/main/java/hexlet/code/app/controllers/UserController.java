@@ -5,7 +5,6 @@ import hexlet.code.app.model.User;
 import hexlet.code.app.repository.UserRepository;
 import hexlet.code.app.service.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -25,9 +24,6 @@ public class UserController {
     private UserRepository userRepository;
 
     private UserService userService;
-
-    private PasswordEncoder passwordEncoder;
-
 
     @GetMapping("/{id}")
     public final User getUser(@PathVariable long id) {

@@ -8,4 +8,6 @@ public interface UserService {
     User createUser(UserCreatedDto userCreatedDto);
 
     User updateUser(Long id, UserCreatedDto userCreatedDto);
+
+    User findUserByEmailAndPassword(String email, String password);
 }

@@ -21,16 +21,14 @@ import static java.lang.String.format;
 public class JwtTokenUtils {
 
     private final String jwtSecret = "zdtlD3JK56m6wTTgsNFhqzjqP";
-    private final String jwtIssuer = "hexlet.code.app";
 
     private final Logger logger;
 
     public String generateAccessToken(User user) {
         return Jwts.builder()
                 .setSubject(format("%s,%s", user.getId(), user.getFirstName()))
-                .setIssuer(jwtIssuer)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000)) // 1 week
+                .setExpiration(new Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000))
                 .signWith(SignatureAlgorithm.HS512, jwtSecret)
                 .compact();
     }
