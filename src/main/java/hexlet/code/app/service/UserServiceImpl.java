@@ -21,11 +21,15 @@ public class UserServiceImpl implements UserService {
     public User createUser(UserCreatedDto userCreatedDto) {
 
         User newUser = new User();
-        newUser.setFirstName(userCreatedDto.getFirstName());
-        newUser.setLastName(userCreatedDto.getLastName());
-        newUser.setEmail(userCreatedDto.getEmail());
-        newUser.setPassword(passwordEncoder.encode(userCreatedDto.getPassword()));
-        return userRepository.save(newUser);
+        User findUser = userRepository.findByEmail(userCreatedDto.getEmail());
+        if (findUser == null) {
+            newUser.setFirstName(userCreatedDto.getFirstName());
+            newUser.setLastName(userCreatedDto.getLastName());
+            newUser.setEmail(userCreatedDto.getEmail());
+            newUser.setPassword(passwordEncoder.encode(userCreatedDto.getPassword()));
+            return userRepository.save(newUser);
+        }
+        return null;
     }
 
     @Override
