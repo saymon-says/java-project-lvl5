@@ -5,6 +5,7 @@ import hexlet.code.app.model.User;
 import hexlet.code.app.repository.UserRepository;
 import hexlet.code.app.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -24,6 +25,8 @@ public class UserController {
     private UserRepository userRepository;
 
     private UserService userService;
+
+    private PasswordEncoder passwordEncoder;
 
 
     @GetMapping("/{id}")
@@ -48,12 +51,7 @@ public class UserController {
 
     @PatchMapping("/{id}")
     public final void updateUser(@PathVariable long id, @RequestBody @Valid UserCreatedDto userCreatedDto) {
-        User findUser = userRepository.findById(id).get();
-        findUser.setFirstName(userCreatedDto.getFirstName());
-        findUser.setLastName(userCreatedDto.getLastName());
-        findUser.setPassword(userCreatedDto.getPassword());
-        findUser.setEmail(userCreatedDto.getEmail());
-        userRepository.save(findUser);
+        userService.updateUser(id, userCreatedDto);
     }
 
 }
