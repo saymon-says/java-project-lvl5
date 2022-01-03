@@ -8,10 +8,15 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.io.Encoders;
+import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 
 import static java.lang.String.format;
@@ -20,49 +25,52 @@ import static java.lang.String.format;
 @RequiredArgsConstructor
 public class JwtTokenUtils {
 
-    private final String jwtSecret = "zdtlD3JK56m6wTTgsNFhqzjqP";
-
     private final Logger logger;
+    private static final int WEEK = 7;
 
-    public String generateAccessToken(User user) {
+    private final SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+    private final String secretKey = Encoders.BASE64.encode(key.getEncoded());
+
+    public final String generateAccessToken(User user) {
+        Date date = Date.from(LocalDate.now().plusDays(WEEK).atStartOfDay(ZoneId.systemDefault()).toInstant());
         return Jwts.builder()
-                .setSubject(format("%s,%s", user.getId(), user.getFirstName()))
+                .setSubject(format("%s,%s", user.getId(), user.getEmail()))
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000))
-                .signWith(SignatureAlgorithm.HS512, jwtSecret)
+                .setExpiration(date)
+                .signWith(SignatureAlgorithm.HS512, secretKey)
                 .compact();
     }
 
-    public String getUserId(String token) {
+    public final String getUserId(String token) {
         Claims claims = Jwts.parser()
-                .setSigningKey(jwtSecret)
+                .setSigningKey(secretKey)
                 .parseClaimsJws(token)
                 .getBody();
 
         return claims.getSubject().split(",")[0];
     }
 
-    public String getUsername(String token) {
+    public final String getUsername(String token) {
         Claims claims = Jwts.parser()
-                .setSigningKey(jwtSecret)
+                .setSigningKey(secretKey)
                 .parseClaimsJws(token)
                 .getBody();
 
         return claims.getSubject().split(",")[1];
     }
 
-    public Date getExpirationDate(String token) {
+    public final Date getExpirationDate(String token) {
         Claims claims = Jwts.parser()
-                .setSigningKey(jwtSecret)
+                .setSigningKey(secretKey)
                 .parseClaimsJws(token)
                 .getBody();
 
         return claims.getExpiration();
     }
 
-    public boolean validate(String token) {
+    public final boolean validate(String token) {
         try {
-            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
+            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
             return true;
         } catch (SignatureException ex) {
             logger.error("Invalid JWT signature - {}", ex.getMessage());

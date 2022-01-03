@@ -1,7 +1,8 @@
 package hexlet.code.app.config;
 
+import hexlet.code.app.config.security.JwtTokenFilter;
 import hexlet.code.app.service.UserDetailsServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -9,9 +10,13 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import javax.servlet.http.HttpServletResponse;
 
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
@@ -22,16 +27,38 @@ import static org.springframework.http.HttpMethod.POST;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsServiceImpl userDetailsService;
+    private final Logger logger;
+    private final JwtTokenFilter jwtTokenFilter;
 
-    public WebSecurityConfig(UserDetailsServiceImpl userDetailsService) {
-        this.userDetailsService = userDetailsService;
+    public WebSecurityConfig(UserDetailsServiceImpl pUserDetailsService,
+                             Logger pLogger,
+                             JwtTokenFilter pJwtTokenFilter) {
+        this.userDetailsService = pUserDetailsService;
+        this.logger = pLogger;
+        this.jwtTokenFilter = pJwtTokenFilter;
         SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
 
     }
 
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable();
+    protected final void configure(HttpSecurity http) throws Exception {
+        http.csrf().disable()
+                .httpBasic().disable();
+
+        http = http
+                .exceptionHandling()
+                .authenticationEntryPoint(
+                        (request, response, ex) -> {
+                            logger.error("Unauthorized request - {}", ex.getMessage());
+                            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage());
+                        }
+                )
+                .and();
+
+        http = http
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and();
 
         http
                 .authorizeRequests()
@@ -39,17 +66,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(POST, "/api/users").permitAll()
                 .antMatchers(POST, "/api/login").permitAll()
                 .antMatchers(GET, "/api/users").permitAll()
-                .anyRequest().authenticated()
-                .and().httpBasic().disable();
+                .anyRequest().authenticated();
+
+        http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
+
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    public static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Override
-    public void configure(AuthenticationManagerBuilder builder) throws Exception {
+    public final void configure(AuthenticationManagerBuilder builder) throws Exception {
         builder.userDetailsService(userDetailsService);
     }
 }

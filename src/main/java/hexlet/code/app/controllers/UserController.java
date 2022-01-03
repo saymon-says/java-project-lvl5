@@ -5,7 +5,6 @@ import hexlet.code.app.model.User;
 import hexlet.code.app.repository.UserRepository;
 import hexlet.code.app.service.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -27,8 +26,8 @@ public class UserController {
     private final UserService userService;
 
     private static final String ONLY_OWNER_BY_ID = """
-            authentication.getName() == @userRepository.findById(#id).get().getEmail()
-        """;
+                authentication.getName() == @userRepository.findById(#id).get().getEmail()
+            """;
 
     @GetMapping("/{id}")
     public final User getUser(@PathVariable long id) {
@@ -51,7 +50,7 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    @PreAuthorize(ONLY_OWNER_BY_ID)
+//    @PreAuthorize(ONLY_OWNER_BY_ID)
     public final void updateUser(@PathVariable long id, @RequestBody @Valid UserCreatedDto userCreatedDto) {
         userService.updateUser(id, userCreatedDto);
     }

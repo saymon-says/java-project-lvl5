@@ -23,7 +23,7 @@ public class AuthController {
     private JwtTokenUtils jwtTokenUtils;
 
     @PostMapping("/login")
-    public ResponseEntity<String> auth(@RequestBody UserCreatedDto userCreatedDto) {
+    public final ResponseEntity<String> auth(@RequestBody UserCreatedDto userCreatedDto) {
         User user = userService.findUserByEmailAndPassword(userCreatedDto.getEmail(), userCreatedDto.getPassword());
         if (user == null) {
             return new ResponseEntity<>("Not authorized. Error", HttpStatus.UNAUTHORIZED);
