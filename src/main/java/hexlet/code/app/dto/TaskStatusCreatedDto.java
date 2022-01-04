@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TaskCreatedDto {
+public class TaskStatusCreatedDto {
 
     @NotEmpty
     @Size(min = 1, message = "name longer than 1 character")

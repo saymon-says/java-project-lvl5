@@ -1,12 +1,12 @@
 package hexlet.code.app.service;
 
-import hexlet.code.app.dto.TaskCreatedDto;
+import hexlet.code.app.dto.TaskStatusCreatedDto;
 import hexlet.code.app.model.TaskStatus;
 
 public interface TaskStatusService {
 
-    TaskStatus create(TaskCreatedDto taskCreatedDto);
+    TaskStatus create(TaskStatusCreatedDto taskStatusCreatedDto);
 
-    TaskStatus update(Long id, TaskCreatedDto taskCreatedDto);
+    TaskStatus update(Long id, TaskStatusCreatedDto taskStatusCreatedDto);
 
 }

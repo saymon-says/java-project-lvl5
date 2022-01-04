@@ -10,4 +10,6 @@ public interface UserService {
     User updateUser(Long id, UserCreatedDto userCreatedDto);
 
     User findUserByEmailAndPassword(String email, String password);
+
+    User findByToken();
 }
