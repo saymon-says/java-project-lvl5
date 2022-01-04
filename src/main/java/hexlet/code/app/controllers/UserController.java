@@ -26,11 +26,12 @@ public class UserController {
 
     private final UserService userService;
 
-    private static final String ONLY_OWNER_BY_ID = """
+    public static final String ONLY_OWNER_BY_ID = """
                 authentication.getName() == @userRepository.findById(#id).get().getEmail()
             """;
+    public static final String ID_path = "/{id}";
 
-    @GetMapping("/{id}")
+    @GetMapping(ID_path)
     public User getUser(@PathVariable long id) {
         return userRepository.findById(id).get();
     }
@@ -45,13 +46,13 @@ public class UserController {
         userService.createUser(userCreatedDto);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping(ID_path)
     @PreAuthorize(ONLY_OWNER_BY_ID)
     public void deleteUser(@PathVariable long id) {
         userRepository.deleteById(id);
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping(ID_path)
     @PreAuthorize(ONLY_OWNER_BY_ID)
     public void updateUser(@PathVariable long id, @RequestBody @Valid UserCreatedDto userCreatedDto) {
         userService.updateUser(id, userCreatedDto);
