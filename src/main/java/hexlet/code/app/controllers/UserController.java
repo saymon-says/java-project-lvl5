@@ -5,6 +5,7 @@ import hexlet.code.app.model.User;
 import hexlet.code.app.repository.UserRepository;
 import hexlet.code.app.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -30,28 +31,29 @@ public class UserController {
             """;
 
     @GetMapping("/{id}")
-    public final User getUser(@PathVariable long id) {
+    public User getUser(@PathVariable long id) {
         return userRepository.findById(id).get();
     }
 
     @GetMapping
-    public final Iterable<User> getUsers() {
+    public Iterable<User> getUsers() {
         return userRepository.findAll();
     }
 
     @PostMapping
-    public final void createUser(@RequestBody @Valid UserCreatedDto userCreatedDto) {
+    public void createUser(@RequestBody @Valid UserCreatedDto userCreatedDto) {
         userService.createUser(userCreatedDto);
     }
 
     @DeleteMapping("/{id}")
-    public final void deleteUser(@PathVariable long id) {
+    @PreAuthorize(ONLY_OWNER_BY_ID)
+    public void deleteUser(@PathVariable long id) {
         userRepository.deleteById(id);
     }
 
     @PatchMapping("/{id}")
-//    @PreAuthorize(ONLY_OWNER_BY_ID)
-    public final void updateUser(@PathVariable long id, @RequestBody @Valid UserCreatedDto userCreatedDto) {
+    @PreAuthorize(ONLY_OWNER_BY_ID)
+    public void updateUser(@PathVariable long id, @RequestBody @Valid UserCreatedDto userCreatedDto) {
         userService.updateUser(id, userCreatedDto);
     }
 

@@ -18,7 +18,7 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public final User createUser(UserCreatedDto userCreatedDto) {
+    public User createUser(UserCreatedDto userCreatedDto) {
 
         User newUser = new User();
         User findUser = userRepository.findByEmail(userCreatedDto.getEmail());
@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public final User updateUser(Long id, UserCreatedDto userCreatedDto) {
+    public User updateUser(Long id, UserCreatedDto userCreatedDto) {
         User findUser = userRepository.findById(id).get();
         findUser.setFirstName(userCreatedDto.getFirstName());
         findUser.setLastName(userCreatedDto.getLastName());
@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public final User findUserByEmailAndPassword(String email, String password) {
+    public User findUserByEmailAndPassword(String email, String password) {
         User user = userRepository.findByEmail(email);
         if (user != null) {
             if (passwordEncoder.matches(password, user.getPassword())) {

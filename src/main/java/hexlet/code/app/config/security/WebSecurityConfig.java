@@ -1,6 +1,5 @@
-package hexlet.code.app.config;
+package hexlet.code.app.config.security;
 
-import hexlet.code.app.config.security.JwtTokenFilter;
 import hexlet.code.app.service.UserDetailsServiceImpl;
 import org.slf4j.Logger;
 import org.springframework.context.annotation.Bean;
@@ -10,7 +9,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,7 +21,9 @@ import static org.springframework.http.HttpMethod.POST;
 
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
+@EnableGlobalMethodSecurity(securedEnabled = true,
+        prePostEnabled = true,
+        proxyTargetClass = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsServiceImpl userDetailsService;
@@ -41,7 +41,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    protected final void configure(HttpSecurity http) throws Exception {
+    protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .httpBasic().disable();
 
@@ -55,30 +55,27 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 )
                 .and();
 
-        http = http
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and();
-
         http
                 .authorizeRequests()
                 .antMatchers("/").permitAll()
                 .antMatchers(POST, "/api/users").permitAll()
                 .antMatchers(POST, "/api/login").permitAll()
                 .antMatchers(GET, "/api/users").permitAll()
-                .anyRequest().authenticated();
-
-        http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
-
+                .and()
+                .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
+                .sessionManagement().disable()
+                .formLogin().disable()
+                .httpBasic().disable()
+                .logout().disable();
     }
 
     @Bean
-    public static PasswordEncoder passwordEncoder() {
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
     @Override
-    public final void configure(AuthenticationManagerBuilder builder) throws Exception {
+    public void configure(AuthenticationManagerBuilder builder) throws Exception {
         builder.userDetailsService(userDetailsService);
     }
 }

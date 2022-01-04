@@ -1,7 +1,7 @@
 package hexlet.code.app.controllers;
 
 import hexlet.code.app.config.security.JwtTokenUtils;
-import hexlet.code.app.dto.UserCreatedDto;
+import hexlet.code.app.dto.UserLoginDto;
 import hexlet.code.app.model.User;
 import hexlet.code.app.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +23,8 @@ public class AuthController {
     private JwtTokenUtils jwtTokenUtils;
 
     @PostMapping("/login")
-    public final ResponseEntity<String> auth(@RequestBody UserCreatedDto userCreatedDto) {
-        User user = userService.findUserByEmailAndPassword(userCreatedDto.getEmail(), userCreatedDto.getPassword());
+    public ResponseEntity<String> auth(@RequestBody UserLoginDto userLoginDto) {
+        User user = userService.findUserByEmailAndPassword(userLoginDto.getEmail(), userLoginDto.getPassword());
         if (user == null) {
             return new ResponseEntity<>("Not authorized. Error", HttpStatus.UNAUTHORIZED);
         } else {

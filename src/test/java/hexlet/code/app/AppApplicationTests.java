@@ -136,4 +136,14 @@ class AppApplicationTests {
         assertThat(response.getContentType()).isEqualTo(MediaType.APPLICATION_JSON.toString());
         assertThat(response.getContentAsString()).doesNotContain("sam@gmail.com");
     }
+
+    @Test
+    void testUnauthorized() throws Exception {
+        MockHttpServletResponse response = mockMvc
+                .perform(get("/api/users/200"))
+                .andReturn()
+                .getResponse();
+
+        assertThat(response.getStatus()).isEqualTo(401);
+    }
 }

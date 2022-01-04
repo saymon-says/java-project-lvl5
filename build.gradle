@@ -1,5 +1,5 @@
 plugins {
-    id 'org.springframework.boot' version '2.5.5'
+    id 'org.springframework.boot' version '2.5.6'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'application'
     id 'checkstyle'
@@ -7,6 +7,7 @@ plugins {
     id 'com.github.ben-manes.versions' version '0.38.0'
     id 'org.liquibase.gradle' version '2.1.0'
 	id 'com.adarshr.test-logger' version '3.0.0'
+    id 'org.siouan.frontend-jdk11' version '6.0.0'
 }
 
 group = 'hexlet.code'
@@ -51,7 +52,6 @@ dependencies {
             'org.liquibase:liquibase-core:4.5.0',
             'org.liquibase.ext:liquibase-hibernate5:4.5.0',
             'org.springframework.boot:spring-boot-starter-data-jpa',
-            'info.picocli:picocli:4.6.1'
     )
 
     runtimeOnly(
@@ -77,6 +77,11 @@ test {
 }
 diffChangeLog {
     dependsOn compileJava
+}
+
+wrapper {
+    gradleVersion = '7.3'
+    distributionType = Wrapper.DistributionType.ALL
 }
 
 liquibase {
@@ -110,3 +115,32 @@ tasks.withType(JavaCompile) {
 checkstyle {
     toolVersion '9.0'
 }
+
+frontend {
+    nodeVersion = '16.13.1'
+    installScript = 'install'
+    assembleScript = 'run build'
+    packageJsonDirectory = file("${projectDir}/frontend")
+}
+
+def configFrontendTasks = {
+    inputs.files(fileTree("$projectDir/frontend").exclude('build', 'node_modules'))
+    outputs.dir("$buildDir/resources/main/static")
+}
+
+assembleFrontend {
+    configure configFrontendTasks
+
+    doLast {
+        copy {
+            from "$projectDir/frontend/build"
+            into "$buildDir/resources/main/static"
+        }
+    }
+}
+
+installFrontend {
+    configure configFrontendTasks
+}
+
+processResources.dependsOn assembleFrontend
