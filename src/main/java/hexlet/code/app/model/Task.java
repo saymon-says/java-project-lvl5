@@ -66,7 +66,7 @@ public class Task {
 
     @ManyToMany
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private List<Label> label;
+    private List<Label> labels;
 
     @CreationTimestamp
     @Temporal(TIMESTAMP)

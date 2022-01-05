@@ -23,7 +23,7 @@ import static javax.persistence.TemporalType.TIMESTAMP;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "label")
+@Table(name = "labels")
 public class Label {
 
     @Id

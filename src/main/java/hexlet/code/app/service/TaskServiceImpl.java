@@ -43,7 +43,7 @@ public class TaskServiceImpl implements TaskService {
         newTask.setDescription(taskDto.getDescription());
         newTask.setExecutor(userRepository.findById(taskDto.getExecutorId()).orElse(null));
         newTask.setAuthor(userService.findByToken());
-        newTask.setLabel(labelRepository.findAllById(taskDto.getLabelIds()));
+        newTask.setLabels(labelRepository.findAllById(taskDto.getLabelIds()));
         return taskRepository.save(newTask);
     }
 }
