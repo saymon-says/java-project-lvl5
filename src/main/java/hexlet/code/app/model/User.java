@@ -35,11 +35,11 @@ public class User {
     @GeneratedValue(strategy = AUTO)
     private Long id;
 
-    @NotEmpty
+    @NotEmpty(message = "User first_name field must not be empty")
     @Size(min = 1, message = "firstName longer than 1 character")
     private String firstName;
 
-    @NotEmpty
+    @NotEmpty(message = "User last_name field must not be empty")
     @Size(min = 1, message = "lastName longer than 1 character")
     private String lastName;
 

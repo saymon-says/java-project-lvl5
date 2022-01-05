@@ -1,6 +1,5 @@
 package hexlet.code.app.service;
 
-import hexlet.code.app.config.security.JwtTokenUtils;
 import hexlet.code.app.dto.UserCreatedDto;
 import hexlet.code.app.model.User;
 import hexlet.code.app.repository.UserRepository;
@@ -21,20 +20,13 @@ public class UserServiceImpl implements UserService {
 
     private PasswordEncoder passwordEncoder;
 
-    private JwtTokenUtils jwtTokenUtils;
-
-
     @Override
     public User createUser(UserCreatedDto userCreatedDto) {
 
         User newUser = new User();
         User findUser = userRepository.findByEmail(userCreatedDto.getEmail());
         if (findUser == null) {
-            newUser.setFirstName(userCreatedDto.getFirstName());
-            newUser.setLastName(userCreatedDto.getLastName());
-            newUser.setEmail(userCreatedDto.getEmail());
-            newUser.setPassword(passwordEncoder.encode(userCreatedDto.getPassword()));
-            return userRepository.save(newUser);
+            return fillInUser(userCreatedDto, newUser);
         }
         return null;
     }
@@ -42,6 +34,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public User updateUser(Long id, UserCreatedDto userCreatedDto) {
         User findUser = userRepository.findById(id).get();
+        return fillInUser(userCreatedDto, findUser);
+    }
+
+    private User fillInUser(UserCreatedDto userCreatedDto, User findUser) {
         findUser.setFirstName(userCreatedDto.getFirstName());
         findUser.setLastName(userCreatedDto.getLastName());
         findUser.setPassword(passwordEncoder.encode(userCreatedDto.getPassword()));

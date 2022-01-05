@@ -10,10 +10,10 @@ import javax.validation.constraints.Size;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class TaskStatusCreatedDto {
+public class LabelDto {
 
-    @NotEmpty(message = "Task_status_dto name field must not be empty")
-    @Size(min = 1, message = "name longer than 1 character")
+    @NotEmpty
+    @Size(min = 1, message = "Label name must be more than 1 character")
     private String name;
 
 }

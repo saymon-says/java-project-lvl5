@@ -15,6 +15,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -42,26 +43,30 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotEmpty
+    @NotEmpty(message = "Task name field must not be empty")
     @Size(min = 1, message = "name longer than 1 character")
     private String name;
 
     private String description;
 
-    @NotNull(message = "Не ноль статус")
+    @NotNull(message = "Task status field must not be empty")
     @ManyToOne(fetch = EAGER)
     @JoinColumn(name = "task_status_id")
     private TaskStatus taskStatus;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    @NotNull(message = "Не ноль автор")
+    @NotNull(message = "Task author field must not be empty")
     private User author;
 
     @ManyToOne
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @JoinColumn(name = "ex_user_id")
     private User executor;
+
+    @ManyToMany
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private List<Label> label;
 
     @CreationTimestamp
     @Temporal(TIMESTAMP)
