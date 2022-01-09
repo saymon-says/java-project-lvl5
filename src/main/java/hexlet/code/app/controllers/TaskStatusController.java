@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
-import static hexlet.code.app.controllers.UserController.ID_path;
+import static hexlet.code.app.controllers.UserController.ID_PATH;
 
 @AllArgsConstructor
 @RestController
@@ -27,7 +27,7 @@ public class TaskStatusController {
 
     private TaskStatusServiceImpl taskStatusService;
 
-    @GetMapping(ID_path)
+    @GetMapping(ID_PATH)
     public TaskStatus getTaskStatus(@PathVariable long id) {
         return taskStatusRepository.findById(id).get();
     }
@@ -42,12 +42,12 @@ public class TaskStatusController {
         taskStatusService.create(taskStatusDto);
     }
 
-    @PutMapping(ID_path)
+    @PutMapping(ID_PATH)
     public void updateTaskStatus(@PathVariable long id, @RequestBody @Valid TaskStatusDto taskStatusDto) {
         taskStatusService.update(id, taskStatusDto);
     }
 
-    @DeleteMapping(ID_path)
+    @DeleteMapping(ID_PATH)
     public void deleteTaskStatus(@PathVariable long id) {
         taskStatusRepository.deleteById(id);
     }

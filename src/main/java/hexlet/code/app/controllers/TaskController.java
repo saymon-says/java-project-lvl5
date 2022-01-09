@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
-import static hexlet.code.app.controllers.UserController.ID_path;
+import static hexlet.code.app.controllers.UserController.ID_PATH;
 import static hexlet.code.app.controllers.UserController.ONLY_OWNER_BY_ID;
 
 @RestController
@@ -30,7 +30,7 @@ public class TaskController {
     private TaskRepository taskRepository;
     private TaskServiceImpl taskService;
 
-    @GetMapping(ID_path)
+    @GetMapping(ID_PATH)
     public Task getTask(@PathVariable long id) {
         return taskRepository.findById(id).get();
     }
@@ -45,12 +45,12 @@ public class TaskController {
         taskService.create(taskDto);
     }
 
-    @PutMapping(ID_path)
+    @PutMapping(ID_PATH)
     public void updateTask(@PathVariable long id, @RequestBody @Valid TaskDto taskDto) {
         taskService.update(id, taskDto);
     }
 
-    @DeleteMapping(ID_path)
+    @DeleteMapping(ID_PATH)
     @PreAuthorize(ONLY_OWNER_BY_ID)
     public void deleteTask(@PathVariable long id) {
         taskRepository.deleteById(id);

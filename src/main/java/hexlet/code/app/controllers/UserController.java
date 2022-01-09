@@ -8,7 +8,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -30,9 +29,9 @@ public class UserController {
     public static final String ONLY_OWNER_BY_ID = """
                 authentication.getName() == @userRepository.findById(#id).get().getEmail()
             """;
-    public static final String ID_path = "/{id}";
+    public static final String ID_PATH = "/{id}";
 
-    @GetMapping(ID_path)
+    @GetMapping(ID_PATH)
     public User getUser(@PathVariable long id) {
         return userRepository.findById(id).get();
     }
@@ -47,13 +46,13 @@ public class UserController {
         userService.createUser(userCreatedDto);
     }
 
-    @DeleteMapping(ID_path)
+    @DeleteMapping(ID_PATH)
     @PreAuthorize(ONLY_OWNER_BY_ID)
     public void deleteUser(@PathVariable long id) {
         userRepository.deleteById(id);
     }
 
-    @PutMapping(ID_path)
+    @PutMapping(ID_PATH)
     @PreAuthorize(ONLY_OWNER_BY_ID)
     public void updateUser(@PathVariable long id, @RequestBody @Valid UserCreatedDto userCreatedDto) {
         userService.updateUser(id, userCreatedDto);

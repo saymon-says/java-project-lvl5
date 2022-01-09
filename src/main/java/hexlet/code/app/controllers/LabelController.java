@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
-import static hexlet.code.app.controllers.UserController.ID_path;
+import static hexlet.code.app.controllers.UserController.ID_PATH;
 
 @RestController
 @AllArgsConstructor
@@ -32,7 +32,7 @@ public class LabelController {
         return labelRepository.findAll();
     }
 
-    @GetMapping(ID_path)
+    @GetMapping(ID_PATH)
     public Label getLabel(@PathVariable long id) {
         return labelRepository.findById(id).get();
     }
@@ -42,12 +42,12 @@ public class LabelController {
         labelService.create(labelDto);
     }
 
-    @PutMapping(ID_path)
+    @PutMapping(ID_PATH)
     public void updateLabel(@PathVariable long id, @RequestBody @Valid LabelDto labelDto) {
         labelService.update(id, labelDto);
     }
 
-    @DeleteMapping(ID_path)
+    @DeleteMapping(ID_PATH)
     public void deleteLabel(@PathVariable long id) {
         labelRepository.deleteById(id);
     }
