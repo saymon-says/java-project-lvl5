@@ -1,6 +1,6 @@
 package hexlet.code.app.controllers;
 
-import hexlet.code.app.dto.TaskStatusCreatedDto;
+import hexlet.code.app.dto.TaskStatusDto;
 import hexlet.code.app.model.TaskStatus;
 import hexlet.code.app.repository.TaskStatusRepository;
 import hexlet.code.app.service.TaskStatusServiceImpl;
@@ -38,13 +38,13 @@ public class TaskStatusController {
     }
 
     @PostMapping
-    public void createTaskStatus(@RequestBody @Valid TaskStatusCreatedDto taskStatusCreatedDto) {
-        taskStatusService.create(taskStatusCreatedDto);
+    public void createTaskStatus(@RequestBody @Valid TaskStatusDto taskStatusDto) {
+        taskStatusService.create(taskStatusDto);
     }
 
     @PutMapping(ID_path)
-    public void updateTaskStatus(@PathVariable long id, @RequestBody @Valid TaskStatusCreatedDto taskStatusCreatedDto) {
-        taskStatusService.update(id, taskStatusCreatedDto);
+    public void updateTaskStatus(@PathVariable long id, @RequestBody @Valid TaskStatusDto taskStatusDto) {
+        taskStatusService.update(id, taskStatusDto);
     }
 
     @DeleteMapping(ID_path)
