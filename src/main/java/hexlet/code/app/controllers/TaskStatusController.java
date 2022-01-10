@@ -10,7 +10,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,23 +36,19 @@ public class TaskStatusController {
     @Operation(summary = "Get task status by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Task status found"),
-            @ApiResponse(responseCode = "404")
+            @ApiResponse(responseCode = "404", description = "Task status with that id not found")
     })
     @GetMapping(ID_PATH)
-    public ResponseEntity<TaskStatus> getTaskStatus(@Parameter(description = "Id of task status to be found")
-                                    @PathVariable long id) {
-        if (taskStatusRepository.existsById(id)) {
-            return new ResponseEntity<>(taskStatusRepository.findById(id).get(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public TaskStatus getTaskStatus(@Parameter(description = "Id of task status to be found")
+                                    @PathVariable final long id) {
+        return this.taskStatusRepository.findById(id).get();
     }
 
     @Operation(summary = "Get list of all task status")
     @ApiResponse(responseCode = "200", description = "List of all task status")
     @GetMapping
     public Iterable<TaskStatus> getAllTaskStatuses() {
-        return taskStatusRepository.findAll();
+        return this.taskStatusRepository.findAll();
     }
 
     @Operation(summary = "Create new task status")
@@ -62,7 +57,7 @@ public class TaskStatusController {
     @ResponseStatus(HttpStatus.CREATED)
     public void createTaskStatus(@Parameter(description = "Task status date to save")
                                  @RequestBody @Valid TaskStatusDto taskStatusDto) {
-        taskStatusService.create(taskStatusDto);
+        this.taskStatusService.create(taskStatusDto);
     }
 
     @Operation(summary = "Update task status by his id")
@@ -71,29 +66,20 @@ public class TaskStatusController {
             @ApiResponse(responseCode = "404", description = "Task status with that id not found")
     })
     @PutMapping(ID_PATH)
-    public ResponseEntity<String> updateTaskStatus(@Parameter(description = "Id of task status to be updated")
-                                                   @PathVariable long id, @RequestBody @Valid TaskStatusDto taskStatusDto) {
-        if (taskStatusRepository.existsById(id)) {
-            taskStatusService.update(id, taskStatusDto);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("Task status with that id not found", HttpStatus.NOT_FOUND);
-        }
+    public void updateTaskStatus(@Parameter(description = "Id of task status to be updated")
+                                 @PathVariable final long id, @RequestBody @Valid TaskStatusDto taskStatusDto) {
+        this.taskStatusService.update(id, taskStatusDto);
     }
 
     @Operation(summary = "Delete task status by his id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Task status deleted"),
-            @ApiResponse(responseCode = "404", description = "Task status with that id not found")
+            @ApiResponse(responseCode = "404", description = "Task status not found"),
+            @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
     @DeleteMapping(ID_PATH)
-    public ResponseEntity<String> deleteTaskStatus(@Parameter(description = "Id of task status to be deleted")
-                                                   @PathVariable long id) {
-        if (taskStatusRepository.existsById(id)) {
-            taskStatusRepository.deleteById(id);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>("Task status with that id not found", HttpStatus.NOT_FOUND);
-        }
+    public void deleteTaskStatus(@Parameter(description = "Id of task status to be deleted")
+                                 @PathVariable final long id) {
+        this.taskStatusRepository.deleteById(id);
     }
 }

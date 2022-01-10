@@ -58,9 +58,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("/").permitAll()
-                .antMatchers(POST, "/api/users").permitAll()
-                .antMatchers(POST, "/api/login").permitAll()
+                .antMatchers(POST, "/api/users", "/api/login").permitAll()
+//                .antMatchers(POST, "/api/login").permitAll()
                 .antMatchers(GET, "/api/users", "/api/statuses").permitAll()
+                .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement().disable()

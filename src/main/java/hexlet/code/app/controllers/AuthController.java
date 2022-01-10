@@ -5,7 +5,6 @@ import hexlet.code.app.dto.UserLoginDto;
 import hexlet.code.app.model.User;
 import hexlet.code.app.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +29,7 @@ public class AuthController {
     @Operation(summary = "Login by email and password")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful authorization"),
-            @ApiResponse(responseCode = "401", description = "Not authorized", content = @Content)
+            @ApiResponse(responseCode = "401", description = "Not authorized")
     })
     @PostMapping("/login")
     public ResponseEntity<String> auth(@RequestBody UserLoginDto userLoginDto) {
