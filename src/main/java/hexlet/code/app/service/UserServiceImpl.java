@@ -1,6 +1,6 @@
 package hexlet.code.app.service;
 
-import hexlet.code.app.dto.UserCreatedDto;
+import hexlet.code.app.dto.UserRegistrationDto;
 import hexlet.code.app.model.User;
 import hexlet.code.app.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -21,27 +21,27 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public User createUser(UserCreatedDto userCreatedDto) {
+    public User registerUser(UserRegistrationDto userRegistrationDto) {
 
         User newUser = new User();
-        User findUser = userRepository.findByEmail(userCreatedDto.getEmail());
+        User findUser = userRepository.findByEmail(userRegistrationDto.getEmail());
         if (findUser == null) {
-            return fillInUser(userCreatedDto, newUser);
+            return fillInUser(userRegistrationDto, newUser);
         }
         return null;
     }
 
     @Override
-    public User updateUser(Long id, UserCreatedDto userCreatedDto) {
+    public User updateUser(Long id, UserRegistrationDto userRegistrationDto) {
         User findUser = userRepository.findById(id).get();
-        return fillInUser(userCreatedDto, findUser);
+        return fillInUser(userRegistrationDto, findUser);
     }
 
-    private User fillInUser(UserCreatedDto userCreatedDto, User findUser) {
-        findUser.setFirstName(userCreatedDto.getFirstName());
-        findUser.setLastName(userCreatedDto.getLastName());
-        findUser.setPassword(passwordEncoder.encode(userCreatedDto.getPassword()));
-        findUser.setEmail(userCreatedDto.getEmail());
+    private User fillInUser(UserRegistrationDto userRegistrationDto, User findUser) {
+        findUser.setFirstName(userRegistrationDto.getFirstName());
+        findUser.setLastName(userRegistrationDto.getLastName());
+        findUser.setPassword(passwordEncoder.encode(userRegistrationDto.getPassword()));
+        findUser.setEmail(userRegistrationDto.getEmail());
         return userRepository.save(findUser);
     }
 

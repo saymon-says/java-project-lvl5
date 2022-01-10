@@ -11,7 +11,7 @@ import javax.validation.constraints.Size;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserCreatedDto {
+public class UserRegistrationDto {
     private static final int MIN = 3;
 
     @NotEmpty(message = "User_created_dto first_name field must not be empty")

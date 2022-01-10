@@ -1,9 +1,13 @@
 package hexlet.code.app.controllers;
 
-import hexlet.code.app.dto.UserCreatedDto;
+import hexlet.code.app.dto.UserRegistrationDto;
 import hexlet.code.app.model.User;
 import hexlet.code.app.repository.UserRepository;
 import hexlet.code.app.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -33,32 +37,49 @@ public class UserController {
             """;
     public static final String ID_PATH = "/{id}";
 
+    @Operation(summary = "Get user by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User found"),
+            @ApiResponse(responseCode = "404", description = "User with that id not found")
+    })
     @GetMapping(ID_PATH)
-    public User getUser(@PathVariable long id) {
-        return userRepository.findById(id).get();
+    public User getUser(@Parameter(description = "Id of task to be found")
+                        @PathVariable final long id) {
+        return this.userRepository.findById(id).get();
     }
 
+    @Operation(summary = "Get list of all users")
+    @ApiResponse(responseCode = "200", description = "List of all users")
     @GetMapping
     public Iterable<User> getUsers() {
-        return userRepository.findAll();
+        return this.userRepository.findAll();
     }
 
+    @Operation(summary = "Registration new user")
+    @ApiResponse(responseCode = "201", description = "User registered")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createUser(@RequestBody @Valid UserCreatedDto userCreatedDto) {
-        userService.createUser(userCreatedDto);
+    public void registrationUser(@RequestBody @Valid UserRegistrationDto userRegistrationDto) {
+        this.userService.registerUser(userRegistrationDto);
     }
 
+    @Operation(summary = "Delete user by his id")
+    @ApiResponse(responseCode = "200", description = "User deleted")
     @DeleteMapping(ID_PATH)
     @PreAuthorize(ONLY_OWNER_BY_ID)
-    public void deleteUser(@PathVariable long id) {
-        userRepository.deleteById(id);
+    public void deleteUser(@Parameter(description = "Id of user to be deleted")
+                           @PathVariable final long id) {
+        this.userRepository.deleteById(id);
     }
 
+    @Operation(summary = "Update user by his id")
+    @ApiResponse(responseCode = "200", description = "User updated")
     @PutMapping(ID_PATH)
     @PreAuthorize(ONLY_OWNER_BY_ID)
-    public void updateUser(@PathVariable long id, @RequestBody @Valid UserCreatedDto userCreatedDto) {
-        userService.updateUser(id, userCreatedDto);
+    public void updateUser(@Parameter(description = "Id of user to be updated")
+                           @PathVariable final long id,
+                           @RequestBody @Valid UserRegistrationDto userRegistrationDto) {
+        this.userService.updateUser(id, userRegistrationDto);
     }
 
 }
