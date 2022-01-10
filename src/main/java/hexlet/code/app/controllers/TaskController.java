@@ -52,14 +52,14 @@ public class TaskController {
         return this.taskRepository.findById(id).get();
     }
 
-    @Operation(summary = "Get list of all task status")
+    @Operation(summary = "Get list of all task")
     @ApiResponse(responseCode = "200", description = "List of all tasks")
     @GetMapping
     public Iterable<Task> getTasks() {
         return this.taskRepository.findAll();
     }
 
-    @Operation(summary = "Create new task status")
+    @Operation(summary = "Create new task")
     @ApiResponse(responseCode = "201", description = "Task created")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

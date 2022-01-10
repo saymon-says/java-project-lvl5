@@ -5,7 +5,9 @@ import hexlet.code.app.model.Label;
 import hexlet.code.app.repository.LabelRepository;
 import hexlet.code.app.service.LabelServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,30 +37,42 @@ public class LabelController {
     @ApiResponse(responseCode = "200", description = "List of all labels")
     @GetMapping
     public Iterable<Label> getLabels() {
-        return labelRepository.findAll();
+        return this.labelRepository.findAll();
     }
 
-    @Operation(summary = "Get the label by id")
-    @ApiResponse(responseCode = "200", description = "Label by id")
+    @Operation(summary = "Get label by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Label found"),
+            @ApiResponse(responseCode = "404", description = "Label with that id not found")
+    })
     @GetMapping(ID_PATH)
-    public Label getLabel(@PathVariable long id) {
-        return labelRepository.findById(id).get();
+    public Label getLabel(@Parameter(description = "Id of label to be found")
+                          @PathVariable final long id) {
+        return this.labelRepository.findById(id).get();
     }
 
+    @Operation(summary = "Create new label")
+    @ApiResponse(responseCode = "201", description = "Label created")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void createLabel(@RequestBody @Valid LabelDto labelDto) {
-        labelService.create(labelDto);
+        this.labelService.create(labelDto);
     }
 
+    @Operation(summary = "Update label by his id")
+    @ApiResponse(responseCode = "200", description = "Label updated")
     @PutMapping(ID_PATH)
-    public void updateLabel(@PathVariable long id, @RequestBody @Valid LabelDto labelDto) {
-        labelService.update(id, labelDto);
+    public void updateLabel(@Parameter(description = "Id of label to be found")
+                            @PathVariable final long id, @RequestBody @Valid LabelDto labelDto) {
+        this.labelService.update(id, labelDto);
     }
 
+    @Operation(summary = "Delete label by his id")
+    @ApiResponse(responseCode = "200", description = "Label deleted")
     @DeleteMapping(ID_PATH)
-    public void deleteLabel(@PathVariable long id) {
-        labelRepository.deleteById(id);
+    public void deleteLabel(@Parameter(description = "Id of label to be found")
+                            @PathVariable final long id) {
+        this.labelRepository.deleteById(id);
     }
 
 }
