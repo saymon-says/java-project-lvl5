@@ -7,6 +7,7 @@ import hexlet.code.app.repository.TaskRepository;
 import hexlet.code.app.service.TaskServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,12 +16,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
 import static hexlet.code.app.controllers.UserController.ID_PATH;
-import static hexlet.code.app.controllers.UserController.ONLY_OWNER_BY_ID;
 
 @RestController
 @AllArgsConstructor
@@ -29,6 +30,12 @@ public class TaskController {
 
     private TaskRepository taskRepository;
     private TaskServiceImpl taskService;
+
+    private static final String SEARCH = "/by";
+
+    private static final String ONLY_TASK_OWNER_BY_ID = """
+            @taskRepository.findById(#id).get().getCreatedBy() == authentication.getName()
+        """;
 
     @GetMapping(ID_PATH)
     public Task getTask(@PathVariable long id) {
@@ -41,6 +48,7 @@ public class TaskController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public void createTask(@RequestBody @Valid TaskDto taskDto) {
         taskService.create(taskDto);
     }
@@ -51,12 +59,12 @@ public class TaskController {
     }
 
     @DeleteMapping(ID_PATH)
-    @PreAuthorize(ONLY_OWNER_BY_ID)
+    @PreAuthorize(ONLY_TASK_OWNER_BY_ID)
     public void deleteTask(@PathVariable long id) {
         taskRepository.deleteById(id);
     }
 
-    @GetMapping("/by")
+    @GetMapping(SEARCH)
     public Iterable<Task> getFilteredTask(@QuerydslPredicate(root = Task.class) Predicate predicate) {
         return taskRepository.findAll(predicate);
     }

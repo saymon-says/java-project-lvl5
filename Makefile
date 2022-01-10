@@ -38,3 +38,6 @@ generate-migrations:
 
 db-migrate:
 	gradlew update
+
+api-doc:
+	gradlew clean generateOpenApiDocs

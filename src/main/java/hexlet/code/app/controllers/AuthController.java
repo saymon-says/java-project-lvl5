@@ -4,6 +4,10 @@ import hexlet.code.app.config.security.JwtTokenUtils;
 import hexlet.code.app.dto.UserLoginDto;
 import hexlet.code.app.model.User;
 import hexlet.code.app.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,11 +21,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(path = "${base-url}")
 @RequiredArgsConstructor
 public class AuthController {
+
     @Autowired
     private UserService userService;
     @Autowired
     private JwtTokenUtils jwtTokenUtils;
 
+    @Operation(summary = "Login by email and password")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Successful authorization"),
+            @ApiResponse(responseCode = "401", description = "Not authorized", content = @Content)
+    })
     @PostMapping("/login")
     public ResponseEntity<String> auth(@RequestBody UserLoginDto userLoginDto) {
         User user = userService.findUserByEmailAndPassword(userLoginDto.getEmail(), userLoginDto.getPassword());
