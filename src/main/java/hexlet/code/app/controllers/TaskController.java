@@ -5,6 +5,10 @@ import hexlet.code.app.dto.TaskDto;
 import hexlet.code.app.model.Task;
 import hexlet.code.app.repository.TaskRepository;
 import hexlet.code.app.service.TaskServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.AllArgsConstructor;
 import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.HttpStatus;
@@ -34,38 +38,55 @@ public class TaskController {
     private static final String SEARCH = "/by";
 
     private static final String ONLY_TASK_OWNER_BY_ID = """
-            @taskRepository.findById(#id).get().getCreatedBy() == authentication.getName()
-        """;
+                @taskRepository.findById(#id).get().getCreatedBy() == authentication.getName()
+            """;
 
+    @Operation(summary = "Get task by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Task found"),
+            @ApiResponse(responseCode = "404", description = "Task with that id not found")
+    })
     @GetMapping(ID_PATH)
-    public Task getTask(@PathVariable long id) {
-        return taskRepository.findById(id).get();
+    public Task getTask(@Parameter(description = "Id of task to be found")
+                        @PathVariable final long id) {
+        return this.taskRepository.findById(id).get();
     }
 
+    @Operation(summary = "Get list of all task status")
+    @ApiResponse(responseCode = "200", description = "List of all tasks")
     @GetMapping
     public Iterable<Task> getTasks() {
-        return taskRepository.findAll();
+        return this.taskRepository.findAll();
     }
 
+    @Operation(summary = "Create new task status")
+    @ApiResponse(responseCode = "201", description = "Task created")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void createTask(@RequestBody @Valid TaskDto taskDto) {
-        taskService.create(taskDto);
+        this.taskService.create(taskDto);
     }
 
+    @Operation(summary = "Update task by his id")
+    @ApiResponse(responseCode = "200", description = "Task updated")
     @PutMapping(ID_PATH)
-    public void updateTask(@PathVariable long id, @RequestBody @Valid TaskDto taskDto) {
-        taskService.update(id, taskDto);
+    public void updateTask(@Parameter(description = "Id of task to be updated")
+                           @PathVariable final long id, @RequestBody @Valid TaskDto taskDto) {
+        this.taskService.update(id, taskDto);
     }
 
+    @Operation(summary = "Delete task by his id")
+    @ApiResponse(responseCode = "200", description = "Task deleted")
     @DeleteMapping(ID_PATH)
     @PreAuthorize(ONLY_TASK_OWNER_BY_ID)
-    public void deleteTask(@PathVariable long id) {
-        taskRepository.deleteById(id);
+    public void deleteTask(@Parameter(description = "Id of task to be deleted")
+                           @PathVariable final long id) {
+        this.taskRepository.deleteById(id);
     }
 
+    @Operation(summary = "Get task by filter")
     @GetMapping(SEARCH)
     public Iterable<Task> getFilteredTask(@QuerydslPredicate(root = Task.class) Predicate predicate) {
-        return taskRepository.findAll(predicate);
+        return this.taskRepository.findAll(predicate);
     }
 }
