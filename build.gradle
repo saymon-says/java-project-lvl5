@@ -111,7 +111,7 @@ openApi {
 }
 
 task stage(dependsOn: ['build', 'installDist'])
-installDist.mustRunAfter clean
+installDist.mustRunAfter build
 
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
