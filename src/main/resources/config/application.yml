@@ -5,11 +5,11 @@ base-url: /api
 
 spring:
   application:
-    name: taskManager
+    name: to-do-my-list
 
   liquibase:
     enabled: true
-    change-log: classpath:db/changelog/changelog-master.xml
+    change-log: classpath:db/changelog/db.changelog-master.xml
 
   mvc:
     hiddenmethod:
