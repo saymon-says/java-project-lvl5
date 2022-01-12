@@ -15,6 +15,10 @@ plugins {
 group = 'hexlet.code'
 version = '1.0-SNAPSHOT'
 
+application {
+    mainClass = 'hexlet.code.app.AppApplication'
+}
+
 compileJava {
     options.release = 16
     options.encoding = 'UTF-8'
@@ -110,8 +114,8 @@ openApi {
     apiDocsUrl.set("http://localhost:5000/v3/api-docs")
 }
 
-task stage(dependsOn: ['build', 'installDist'])
-installDist.mustRunAfter build
+task stage(dependsOn: ['clean', 'installDist'])
+installDist.mustRunAfter clean
 
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
