@@ -2,6 +2,7 @@ package hexlet.code.app.config.security;
 
 import hexlet.code.app.model.User;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.CompressionCodecs;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -18,7 +19,9 @@ import javax.crypto.SecretKey;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.Map;
 
+import static io.jsonwebtoken.SignatureAlgorithm.HS256;
 import static java.lang.String.format;
 
 @Component
