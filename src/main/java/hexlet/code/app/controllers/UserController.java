@@ -23,9 +23,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+import static hexlet.code.app.controllers.UserController.USERS_PATH;
+
 @AllArgsConstructor
 @RestController
-@RequestMapping("${base-url}" + "/users")
+@RequestMapping("${base-url}" + USERS_PATH)
 public class UserController {
 
     private final UserRepository userRepository;
@@ -36,6 +38,7 @@ public class UserController {
                 authentication.getName() == @userRepository.findById(#id).get().getEmail()
             """;
     public static final String ID_PATH = "/{id}";
+    public static final String USERS_PATH = "/users";
 
     @Operation(summary = "Get user by id")
     @ApiResponses(value = {
