@@ -26,12 +26,14 @@ public class AuthController {
     @Autowired
     private JwtTokenUtils jwtTokenUtils;
 
+    public static final String LOGIN_PATH = "/login";
+
     @Operation(summary = "Login by email and password")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successful authorization"),
             @ApiResponse(responseCode = "401", description = "Not authorized")
     })
-    @PostMapping("/login")
+    @PostMapping(LOGIN_PATH)
     public ResponseEntity<String> auth(@RequestBody UserLoginDto userLoginDto) {
         User user = userService.findUserByEmailAndPassword(userLoginDto.getEmail(), userLoginDto.getPassword());
         if (user == null) {
