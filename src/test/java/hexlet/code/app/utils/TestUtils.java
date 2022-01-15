@@ -3,6 +3,7 @@ package hexlet.code.app.utils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import hexlet.code.app.config.security.JwtTokenUtils;
 import hexlet.code.app.dto.UserRegistrationDto;
 import hexlet.code.app.model.User;
 import hexlet.code.app.repository.UserRepository;
@@ -13,20 +14,24 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import static hexlet.code.app.controllers.UserController.USERS_PATH;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @Component
 public class TestUtils {
 
-    private static final String TEST_USERNAME_1 = "test_1@gmail.com";
-    private static final String TEST_USERNAME_2 = "test_2@gmail.com";
+    public static final String TEST_USERNAME_1 = "test_1@gmail.com";
+    public static final String TEST_USERNAME_2 = "test_2@gmail.com";
 
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private JwtTokenUtils jwtTokenUtils;
 
     private final UserRegistrationDto testNewUserRegistration = new UserRegistrationDto(
             "Sam", "Testov", TEST_USERNAME_1, "1234");
@@ -55,12 +60,11 @@ public class TestUtils {
         return perform(request);
     }
 
-//    public ResultActions perform(final MockHttpServletRequestBuilder request, final String byUser) throws Exception {
-//        final String token = .expiring(Map.of("username", byUser));
-//        request.header(AUTHORIZATION, token);
-//
-//        return perform(request);
-//    }
+    public ResultActions perform(final MockHttpServletRequestBuilder request, final User user) throws Exception {
+        final String token = jwtTokenUtils.generateAccessToken(user);
+        request.header(AUTHORIZATION, "Bearer " + token);
+        return perform(request);
+    }
 
     public ResultActions perform(final MockHttpServletRequestBuilder request) throws Exception {
         return mockMvc.perform(request);

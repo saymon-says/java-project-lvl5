@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -43,6 +44,7 @@ public class User {
     private String lastName;
 
     @Email(message = "Email should be valid")
+    @Column(unique = true)
     private String email;
 
     @JsonIgnore
