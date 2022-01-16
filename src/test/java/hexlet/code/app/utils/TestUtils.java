@@ -5,10 +5,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.app.config.security.JwtTokenUtils;
 import hexlet.code.app.dto.LabelDto;
+import hexlet.code.app.dto.TaskDto;
 import hexlet.code.app.dto.TaskStatusDto;
 import hexlet.code.app.dto.UserRegistrationDto;
 import hexlet.code.app.model.User;
 import hexlet.code.app.repository.LabelRepository;
+import hexlet.code.app.repository.TaskRepository;
 import hexlet.code.app.repository.TaskStatusRepository;
 import hexlet.code.app.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +19,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import java.util.Collections;
+
 import static hexlet.code.app.controllers.LabelController.LABELS_PATH;
+import static hexlet.code.app.controllers.TaskController.TASKS_PATH;
 import static hexlet.code.app.controllers.TaskStatusController.STATUSES_PATH;
 import static hexlet.code.app.controllers.UserController.USERS_PATH;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -29,6 +34,8 @@ public class TestUtils {
 
     public static final String TEST_USERNAME_1 = "test_1@gmail.com";
     public static final String TEST_USERNAME_2 = "test_2@gmail.com";
+    public static final String DEFAULT_LABEL = "Created label";
+    public static final String DEFAULT_TASK_STATUS = "Created status";
 
     @Autowired
     private MockMvc mockMvc;
@@ -43,20 +50,35 @@ public class TestUtils {
     private LabelRepository labelRepository;
 
     @Autowired
+    private TaskRepository taskRepository;
+
+    @Autowired
     private JwtTokenUtils jwtTokenUtils;
 
     public void tearDown() {
-        userRepository.deleteAll();
+        taskRepository.deleteAll();
         taskStatusRepository.deleteAll();
         labelRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     private final UserRegistrationDto testNewUserRegistration = new UserRegistrationDto(
-            "Sam", "Testov", TEST_USERNAME_1, "1234");
+            "Sam",
+            "Testov",
+            TEST_USERNAME_1,
+            "1234");
 
-    private final TaskStatusDto testNewTaskStatus = new TaskStatusDto("New Test");
+    private final TaskStatusDto testNewTaskStatus = new TaskStatusDto(DEFAULT_TASK_STATUS);
 
-    private final LabelDto testNewLabel = new LabelDto("created");
+    private final LabelDto testNewLabel = new LabelDto(DEFAULT_LABEL);
+
+    private final TaskDto testNewTask = new TaskDto(
+            "Test",
+            "TestTest",
+            1,
+            Collections.singletonList(1L),
+            1
+    );
 
     public UserRegistrationDto getTestNewUserRegistration() {
         return testNewUserRegistration;
@@ -68,6 +90,10 @@ public class TestUtils {
 
     public LabelDto getTestNewLabel() {
         return testNewLabel;
+    }
+
+    public TaskDto getTestNewTask() {
+        return testNewTask;
     }
 
     public User getUserByEmail(final String email) {
@@ -84,6 +110,10 @@ public class TestUtils {
 
     public ResultActions createDefaultLabel() throws Exception {
         return createLabel(testNewLabel);
+    }
+
+    public ResultActions createDefaultTask() throws Exception {
+        return createTask(testNewTask);
     }
 
     public ResultActions regUser(final UserRegistrationDto dto) throws Exception {
@@ -103,6 +133,13 @@ public class TestUtils {
     public ResultActions createLabel(final LabelDto labelDto) throws Exception {
         final var request = post(LABELS_PATH)
                 .content(asJson(labelDto))
+                .contentType(APPLICATION_JSON);
+        return perform(request, getUserByEmail(TEST_USERNAME_1));
+    }
+
+    public ResultActions createTask(final TaskDto taskDto) throws Exception {
+        final var request = post(TASKS_PATH)
+                .content(asJson(taskDto))
                 .contentType(APPLICATION_JSON);
         return perform(request, getUserByEmail(TEST_USERNAME_1));
     }

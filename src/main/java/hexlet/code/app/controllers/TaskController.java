@@ -25,17 +25,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+import static hexlet.code.app.controllers.TaskController.TASKS_PATH;
 import static hexlet.code.app.controllers.UserController.ID_PATH;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/${base-url}" + "/tasks")
+@RequestMapping("/${base-url}" + TASKS_PATH)
 public class TaskController {
 
     private TaskRepository taskRepository;
     private TaskServiceImpl taskService;
 
     private static final String SEARCH = "/by";
+    public static final String TASKS_PATH = "/tasks";
 
     private static final String ONLY_TASK_OWNER_BY_ID = """
                 @taskRepository.findById(#id).get().getCreatedBy() == authentication.getName()
