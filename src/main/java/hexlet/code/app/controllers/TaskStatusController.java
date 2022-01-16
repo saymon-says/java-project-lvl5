@@ -22,16 +22,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+import static hexlet.code.app.controllers.TaskStatusController.STATUSES_PATH;
 import static hexlet.code.app.controllers.UserController.ID_PATH;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("${base-url}" + "/statuses")
+@RequestMapping("${base-url}" + STATUSES_PATH)
 public class TaskStatusController {
 
     private TaskStatusRepository taskStatusRepository;
 
     private TaskStatusServiceImpl taskStatusService;
+
+    public static final String STATUSES_PATH = "/statuses";
 
     @Operation(summary = "Get task status by id")
     @ApiResponses(value = {

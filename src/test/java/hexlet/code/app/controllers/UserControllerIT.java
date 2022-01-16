@@ -64,6 +64,15 @@ public class UserControllerIT {
     }
 
     @Test
+    public void registrationInvalidUser() throws Exception {
+        assertEquals(0, userRepository.count());
+        UserRegistrationDto userDto = new UserRegistrationDto(
+                "first", "", TEST_USERNAME_2, "1");
+        utils.regUser(userDto).andExpect(status().is4xxClientError());
+        assertEquals(0, userRepository.count());
+    }
+
+    @Test
     public void getUserById() throws Exception {
         utils.regDefaultUser();
         final User expectedUser = userRepository.findAll().get(0);
