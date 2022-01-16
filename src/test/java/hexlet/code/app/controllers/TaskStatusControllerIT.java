@@ -54,9 +54,12 @@ public class TaskStatusControllerIT {
     @Autowired
     private TestUtils utils;
 
+    private User findUser;
+
     @BeforeEach
     public void before() throws Exception {
         utils.regDefaultUser();
+        findUser = userRepository.findByEmail(TEST_USERNAME_1);
     }
 
     @AfterEach
@@ -70,7 +73,6 @@ public class TaskStatusControllerIT {
 
     @Test
     public void createStatus() throws Exception {
-        final User findUser = userRepository.findByEmail(TEST_USERNAME_1);
         final var taskStatus = createTaskStatus();
         final var request = post(STATUSES_PATH)
                 .content(asJson(taskStatus))
@@ -103,7 +105,6 @@ public class TaskStatusControllerIT {
     public void deleteStatus() throws Exception {
         utils.createDefaultTaskStatus();
 
-        final User findUser = userRepository.findByEmail(TEST_USERNAME_1);
         final Long taskStatusId = taskStatusRepository.findAll().get(0).getId();
 
         utils.perform(delete(STATUSES_PATH + ID_PATH, taskStatusId), findUser)
@@ -116,7 +117,6 @@ public class TaskStatusControllerIT {
     @Test
     public void getTaskStatusById() throws Exception {
         utils.createDefaultTaskStatus();
-        final User findUser = userRepository.findByEmail(TEST_USERNAME_1);
 
         final TaskStatus expectedTaskStatus = taskStatusRepository.findAll().get(0);
         final var response = utils.perform(
@@ -134,8 +134,6 @@ public class TaskStatusControllerIT {
     @Test
     public void getAllTaskStatuses() throws Exception {
         utils.createDefaultTaskStatus();
-
-        final User findUser = userRepository.findByEmail(TEST_USERNAME_1);
 
         final var taskStatus = createTaskStatus();
         final var request = post(STATUSES_PATH)
@@ -156,7 +154,6 @@ public class TaskStatusControllerIT {
 
     @Test
     public void updateTaskStatus() throws Exception {
-        final User findUser = userRepository.findByEmail(TEST_USERNAME_1);
         utils.createDefaultTaskStatus();
         final Long findTaskStatusId = taskStatusRepository.findAll().get(0).getId();
         final var updateRequest = put(STATUSES_PATH + ID_PATH, findTaskStatusId)
@@ -166,7 +163,7 @@ public class TaskStatusControllerIT {
         utils.perform(updateRequest, findUser).andExpect(status().isOk());
 
         assertTrue(taskStatusRepository.existsById(findTaskStatusId));
-        assertNull(taskStatusRepository.findByName("New Test"));
+        assertNull(taskStatusRepository.findByName(utils.getTestNewTaskStatus().getName()));
         assertNotNull(taskStatusRepository.findByName("New Test Status"));
     }
 

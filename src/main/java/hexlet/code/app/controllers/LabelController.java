@@ -22,16 +22,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
+import static hexlet.code.app.controllers.LabelController.LABELS_PATH;
 import static hexlet.code.app.controllers.UserController.ID_PATH;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/${base-url}" + "/labels")
+@RequestMapping("/${base-url}" + LABELS_PATH)
 public class LabelController {
 
     private LabelServiceImpl labelService;
 
     private LabelRepository labelRepository;
+
+    public static final String LABELS_PATH = "/labels";
 
     @Operation(summary = "Get list of all labels")
     @ApiResponse(responseCode = "200", description = "List of all labels")

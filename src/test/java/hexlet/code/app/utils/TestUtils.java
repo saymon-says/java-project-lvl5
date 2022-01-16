@@ -4,9 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.app.config.security.JwtTokenUtils;
+import hexlet.code.app.dto.LabelDto;
 import hexlet.code.app.dto.TaskStatusDto;
 import hexlet.code.app.dto.UserRegistrationDto;
 import hexlet.code.app.model.User;
+import hexlet.code.app.repository.LabelRepository;
 import hexlet.code.app.repository.TaskStatusRepository;
 import hexlet.code.app.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import static hexlet.code.app.controllers.LabelController.LABELS_PATH;
 import static hexlet.code.app.controllers.TaskStatusController.STATUSES_PATH;
 import static hexlet.code.app.controllers.UserController.USERS_PATH;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -37,11 +40,15 @@ public class TestUtils {
     private TaskStatusRepository taskStatusRepository;
 
     @Autowired
+    private LabelRepository labelRepository;
+
+    @Autowired
     private JwtTokenUtils jwtTokenUtils;
 
     public void tearDown() {
         userRepository.deleteAll();
         taskStatusRepository.deleteAll();
+        labelRepository.deleteAll();
     }
 
     private final UserRegistrationDto testNewUserRegistration = new UserRegistrationDto(
@@ -49,12 +56,18 @@ public class TestUtils {
 
     private final TaskStatusDto testNewTaskStatus = new TaskStatusDto("New Test");
 
+    private final LabelDto testNewLabel = new LabelDto("created");
+
     public UserRegistrationDto getTestNewUserRegistration() {
         return testNewUserRegistration;
     }
 
     public TaskStatusDto getTestNewTaskStatus() {
         return testNewTaskStatus;
+    }
+
+    public LabelDto getTestNewLabel() {
+        return testNewLabel;
     }
 
     public User getUserByEmail(final String email) {
@@ -69,6 +82,10 @@ public class TestUtils {
         return createTaskStatus(testNewTaskStatus);
     }
 
+    public ResultActions createDefaultLabel() throws Exception {
+        return createLabel(testNewLabel);
+    }
+
     public ResultActions regUser(final UserRegistrationDto dto) throws Exception {
         final var request = post(USERS_PATH)
                 .content(asJson(dto))
@@ -79,6 +96,13 @@ public class TestUtils {
     public ResultActions createTaskStatus(final TaskStatusDto taskStatusDto) throws Exception {
         final var request = post(STATUSES_PATH)
                 .content(asJson(taskStatusDto))
+                .contentType(APPLICATION_JSON);
+        return perform(request, getUserByEmail(TEST_USERNAME_1));
+    }
+
+    public ResultActions createLabel(final LabelDto labelDto) throws Exception {
+        final var request = post(LABELS_PATH)
+                .content(asJson(labelDto))
                 .contentType(APPLICATION_JSON);
         return perform(request, getUserByEmail(TEST_USERNAME_1));
     }
