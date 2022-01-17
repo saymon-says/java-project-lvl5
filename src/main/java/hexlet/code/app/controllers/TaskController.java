@@ -40,7 +40,7 @@ public class TaskController {
     public static final String TASKS_PATH = "/tasks";
 
     private static final String ONLY_TASK_OWNER_BY_ID = """
-                @taskRepository.findById(#id).get().getCreatedBy() == authentication.getName()
+                @taskRepository.findById(#id).get().getAuthor().getEmail() == authentication.getName()
             """;
 
     @Operation(summary = "Get task by id")

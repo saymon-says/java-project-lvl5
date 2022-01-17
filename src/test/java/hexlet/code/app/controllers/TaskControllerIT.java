@@ -2,19 +2,19 @@ package hexlet.code.app.controllers;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import hexlet.code.app.config.SpringConfigForIT;
-import hexlet.code.app.dto.TaskTestDto;
+import hexlet.code.app.dto.TaskDto;
 import hexlet.code.app.model.Task;
 import hexlet.code.app.model.User;
 import hexlet.code.app.repository.LabelRepository;
 import hexlet.code.app.repository.TaskRepository;
 import hexlet.code.app.repository.TaskStatusRepository;
 import hexlet.code.app.repository.UserRepository;
-import hexlet.code.app.service.TaskServiceImpl;
 import hexlet.code.app.utils.TestUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -63,12 +63,12 @@ public class TaskControllerIT {
     private TaskRepository taskRepository;
 
     @Autowired
-    private TaskServiceImpl taskService;
-
-    @Autowired
     private TestUtils utils;
 
     private User findUser;
+
+    @Autowired
+    private Logger logger;
 
     @BeforeEach
     public void before() throws Exception {
@@ -83,14 +83,13 @@ public class TaskControllerIT {
         utils.tearDown();
     }
 
-    private TaskTestDto createNewTask() {
-        return new TaskTestDto(
+    private TaskDto createNewTask() {
+        return new TaskDto(
                 "Test new",
                 "TestTest",
                 findUser.getId(),
                 Collections.singletonList(labelRepository.findAll().get(0).getId()),
-                taskStatusRepository.findAll().get(0).getId(),
-                findUser.getId());
+                taskStatusRepository.findAll().get(0).getId());
     }
 
     @Test
@@ -105,7 +104,12 @@ public class TaskControllerIT {
 
     @Test
     public void getTaskById() throws Exception {
-        utils.createDefaultTask();
+        final var newTask = createNewTask();
+        final var request = post(TASKS_PATH)
+                .content(asJson(newTask))
+                .contentType(MediaType.APPLICATION_JSON);
+        utils.perform(request, findUser).andExpect(status().isCreated());
+
         assertEquals(1, taskRepository.count());
 
         final Task expectedTask = taskRepository.findAll().get(0);
@@ -145,7 +149,12 @@ public class TaskControllerIT {
 
     @Test
     public void updateTask() throws Exception {
-        utils.createDefaultTask().andExpect(status().isCreated());
+        final var task = createNewTask();
+        final var request = post(TASKS_PATH)
+                .content(asJson(task))
+                .contentType(MediaType.APPLICATION_JSON);
+        utils.perform(request, findUser).andExpect(status().isCreated());
+
         final Long findTaskId = taskRepository.findAll().get(0).getId();
 
         final var updateRequest = put(TASKS_PATH + ID_PATH, findTaskId)
