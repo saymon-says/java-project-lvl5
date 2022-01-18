@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 import static hexlet.code.controllers.TaskController.TASKS_PATH;
+import static hexlet.code.controllers.UserController.ID_PATH;
 
 @RestController
 @AllArgsConstructor
@@ -35,7 +36,6 @@ public class TaskController {
     private TaskRepository taskRepository;
     private TaskServiceImpl taskService;
 
-    private static final String SEARCH = "/by";
     public static final String TASKS_PATH = "/tasks";
 
     private static final String ONLY_TASK_OWNER_BY_ID = """
@@ -47,17 +47,10 @@ public class TaskController {
             @ApiResponse(responseCode = "200", description = "Task found"),
             @ApiResponse(responseCode = "404", description = "Task with that id not found")
     })
-    @GetMapping(UserController.ID_PATH)
+    @GetMapping(ID_PATH)
     public Task getTask(@Parameter(description = "Id of task to be found")
                         @PathVariable final long id) {
         return this.taskRepository.findById(id).get();
-    }
-
-    @Operation(summary = "Get list of all task")
-    @ApiResponse(responseCode = "200", description = "List of all tasks")
-    @GetMapping
-    public Iterable<Task> getTasks() {
-        return this.taskRepository.findAll();
     }
 
     @Operation(summary = "Create new task")
@@ -70,7 +63,7 @@ public class TaskController {
 
     @Operation(summary = "Update task by his id")
     @ApiResponse(responseCode = "200", description = "Task updated")
-    @PutMapping(UserController.ID_PATH)
+    @PutMapping(ID_PATH)
     public void updateTask(@Parameter(description = "Id of task to be updated")
                            @PathVariable final long id, @RequestBody @Valid TaskDto taskDto) {
         this.taskService.update(id, taskDto);
@@ -78,15 +71,16 @@ public class TaskController {
 
     @Operation(summary = "Delete task by his id")
     @ApiResponse(responseCode = "200", description = "Task deleted")
-    @DeleteMapping(UserController.ID_PATH)
+    @DeleteMapping(ID_PATH)
     @PreAuthorize(ONLY_TASK_OWNER_BY_ID)
     public void deleteTask(@Parameter(description = "Id of task to be deleted")
                            @PathVariable final long id) {
         this.taskRepository.deleteById(id);
     }
 
-    @Operation(summary = "Get task by filter")
-    @GetMapping(SEARCH)
+    @Operation(summary = "Get list of all task or filtered")
+    @ApiResponse(responseCode = "200", description = "List of all tasks or filtered")
+    @GetMapping
     public Iterable<Task> getFilteredTask(@QuerydslPredicate(root = Task.class) Predicate predicate) {
         return this.taskRepository.findAll(predicate);
     }
