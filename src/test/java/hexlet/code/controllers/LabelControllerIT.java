@@ -18,12 +18,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
 
 import static hexlet.code.config.SpringConfigForIT.TEST_PROFILE;
 import static hexlet.code.controllers.LabelController.LABELS_PATH;
+import static hexlet.code.controllers.UserController.ID_PATH;
 import static hexlet.code.utils.TestUtils.TEST_USERNAME_1;
 import static hexlet.code.utils.TestUtils.asJson;
 import static hexlet.code.utils.TestUtils.fromJson;
@@ -117,7 +117,7 @@ public class LabelControllerIT {
         utils.createDefaultLabel();
         final Label expectedLabel = labelRepository.findAll().get(0);
         final var response = utils.perform(
-                        get(LABELS_PATH + UserController.ID_PATH, expectedLabel.getId()), findUser)
+                        get(LABELS_PATH + ID_PATH, expectedLabel.getId()), findUser)
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse();
@@ -132,7 +132,7 @@ public class LabelControllerIT {
         utils.createDefaultLabel();
         final Long findLabelId = labelRepository.findAll().get(0).getId();
 
-        final var updateRequest = MockMvcRequestBuilders.put(LABELS_PATH + UserController.ID_PATH, findLabelId)
+        final var updateRequest = put(LABELS_PATH + ID_PATH, findLabelId)
                 .content(asJson(createNewTestLabel()))
                 .contentType(APPLICATION_JSON);
         utils.perform(updateRequest, findUser).andExpect(status().isOk());
@@ -148,7 +148,7 @@ public class LabelControllerIT {
 
         final long findLabelId = labelRepository.findAll().get(0).getId();
 
-        utils.perform(MockMvcRequestBuilders.delete(LABELS_PATH + UserController.ID_PATH, findLabelId), findUser)
+        utils.perform(delete(LABELS_PATH + ID_PATH, findLabelId), findUser)
                 .andExpect(status().isOk());
 
         assertEquals(0, labelRepository.count());

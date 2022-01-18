@@ -14,19 +14,19 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Collections;
 import java.util.List;
 
 import static hexlet.code.config.SpringConfigForIT.TEST_PROFILE;
+import static hexlet.code.controllers.TaskController.TASKS_PATH;
+import static hexlet.code.controllers.UserController.ID_PATH;
 import static hexlet.code.utils.TestUtils.TEST_USERNAME_1;
 import static hexlet.code.utils.TestUtils.asJson;
 import static hexlet.code.utils.TestUtils.fromJson;
@@ -66,9 +66,6 @@ public class TaskControllerIT {
 
     private User findUser;
 
-    @Autowired
-    private Logger logger;
-
     @BeforeEach
     public void before() throws Exception {
         utils.regDefaultUser();
@@ -94,7 +91,7 @@ public class TaskControllerIT {
     @Test
     public void createTask() throws Exception {
         final var task = createNewTask();
-        final var request = MockMvcRequestBuilders.post(TaskController.TASKS_PATH)
+        final var request = post(TASKS_PATH)
                 .content(asJson(task))
                 .contentType(MediaType.APPLICATION_JSON);
         utils.perform(request, findUser).andExpect(status().isCreated());
@@ -104,7 +101,7 @@ public class TaskControllerIT {
     @Test
     public void getTaskById() throws Exception {
         final var newTask = createNewTask();
-        final var request = MockMvcRequestBuilders.post(TaskController.TASKS_PATH)
+        final var request = post(TASKS_PATH)
                 .content(asJson(newTask))
                 .contentType(MediaType.APPLICATION_JSON);
         utils.perform(request, findUser).andExpect(status().isCreated());
@@ -114,7 +111,7 @@ public class TaskControllerIT {
         final Task expectedTask = taskRepository.findAll().get(0);
 
         final var response = utils.perform(
-                        MockMvcRequestBuilders.get(TaskController.TASKS_PATH + UserController.ID_PATH, expectedTask.getId()), findUser)
+                        get(TASKS_PATH + ID_PATH, expectedTask.getId()), findUser)
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse();
@@ -130,12 +127,12 @@ public class TaskControllerIT {
     public void getAllTasks() throws Exception {
         utils.createDefaultTask();
         final var task = createNewTask();
-        final var request = MockMvcRequestBuilders.post(TaskController.TASKS_PATH)
+        final var request = post(TASKS_PATH)
                 .content(asJson(task))
                 .contentType(APPLICATION_JSON);
         utils.perform(request, findUser).andExpect(status().isCreated());
 
-        final var response = utils.perform(MockMvcRequestBuilders.get(TaskController.TASKS_PATH), findUser)
+        final var response = utils.perform(get(TASKS_PATH), findUser)
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse();
@@ -149,14 +146,14 @@ public class TaskControllerIT {
     @Test
     public void updateTask() throws Exception {
         final var task = createNewTask();
-        final var request = MockMvcRequestBuilders.post(TaskController.TASKS_PATH)
+        final var request = post(TASKS_PATH)
                 .content(asJson(task))
                 .contentType(MediaType.APPLICATION_JSON);
         utils.perform(request, findUser).andExpect(status().isCreated());
 
         final Long findTaskId = taskRepository.findAll().get(0).getId();
 
-        final var updateRequest = MockMvcRequestBuilders.put(TaskController.TASKS_PATH + UserController.ID_PATH, findTaskId)
+        final var updateRequest = put(TASKS_PATH + ID_PATH, findTaskId)
                 .content(asJson(createNewTask()))
                 .contentType(APPLICATION_JSON);
         utils.perform(updateRequest, findUser).andExpect(status().isOk());
@@ -169,14 +166,14 @@ public class TaskControllerIT {
     @Test
     public void deleteTask() throws Exception {
         final var task = createNewTask();
-        final var request = MockMvcRequestBuilders.post(TaskController.TASKS_PATH)
+        final var request = post(TASKS_PATH)
                 .content(asJson(task))
                 .contentType(MediaType.APPLICATION_JSON);
         utils.perform(request, findUser).andExpect(status().isCreated());
 
         final long findTaskId = taskRepository.findAll().get(0).getId();
 
-        utils.perform(MockMvcRequestBuilders.delete(TaskController.TASKS_PATH + UserController.ID_PATH, findTaskId), findUser)
+        utils.perform(delete(TASKS_PATH + ID_PATH, findTaskId), findUser)
                 .andExpect(status().isOk());
 
         assertEquals(0, taskRepository.count());

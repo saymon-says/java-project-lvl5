@@ -17,12 +17,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.List;
 
 import static hexlet.code.config.SpringConfigForIT.TEST_PROFILE;
 import static hexlet.code.controllers.TaskStatusController.STATUSES_PATH;
+import static hexlet.code.controllers.UserController.ID_PATH;
 import static hexlet.code.utils.TestUtils.TEST_USERNAME_1;
 import static hexlet.code.utils.TestUtils.asJson;
 import static hexlet.code.utils.TestUtils.fromJson;
@@ -107,7 +107,7 @@ public class TaskStatusControllerIT {
 
         final Long taskStatusId = taskStatusRepository.findAll().get(0).getId();
 
-        utils.perform(MockMvcRequestBuilders.delete(STATUSES_PATH + UserController.ID_PATH, taskStatusId), findUser)
+        utils.perform(delete(STATUSES_PATH + ID_PATH, taskStatusId), findUser)
                 .andExpect(status().isOk());
 
         assertEquals(0, taskStatusRepository.count());
@@ -120,7 +120,7 @@ public class TaskStatusControllerIT {
 
         final TaskStatus expectedTaskStatus = taskStatusRepository.findAll().get(0);
         final var response = utils.perform(
-                        get(STATUSES_PATH + UserController.ID_PATH, expectedTaskStatus.getId()), findUser)
+                        get(STATUSES_PATH + ID_PATH, expectedTaskStatus.getId()), findUser)
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse();
@@ -156,7 +156,7 @@ public class TaskStatusControllerIT {
     public void updateTaskStatus() throws Exception {
         utils.createDefaultTaskStatus();
         final Long findTaskStatusId = taskStatusRepository.findAll().get(0).getId();
-        final var updateRequest = MockMvcRequestBuilders.put(STATUSES_PATH + UserController.ID_PATH, findTaskStatusId)
+        final var updateRequest = put(STATUSES_PATH + ID_PATH, findTaskStatusId)
                 .content(asJson(createTaskStatus()))
                 .contentType(APPLICATION_JSON);
 

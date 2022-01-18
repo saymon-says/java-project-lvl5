@@ -67,7 +67,11 @@ public class UserControllerIT {
     public void registrationInvalidUser() throws Exception {
         assertEquals(0, userRepository.count());
         UserRegistrationDto userDto = new UserRegistrationDto(
-                "first", "", TEST_USERNAME_2, "1");
+                "first",
+                "",
+                TEST_USERNAME_2,
+                "1"
+        );
         utils.regUser(userDto).andExpect(status().is4xxClientError());
         assertEquals(0, userRepository.count());
     }
@@ -128,7 +132,9 @@ public class UserControllerIT {
                 utils.getTestNewUserRegistration().getEmail(),
                 utils.getTestNewUserRegistration().getPassword()
         );
-        final var loginRequest = post(LOGIN_PATH).content(asJson(loginDto)).contentType(APPLICATION_JSON);
+        final var loginRequest = post(LOGIN_PATH)
+                .content(asJson(loginDto))
+                .contentType(APPLICATION_JSON);
         utils.perform(loginRequest).andExpect(status().isOk());
     }
 
@@ -138,7 +144,9 @@ public class UserControllerIT {
                 utils.getTestNewUserRegistration().getEmail(),
                 utils.getTestNewUserRegistration().getPassword()
         );
-        final var loginRequest = post(LOGIN_PATH).content(asJson(loginDto)).contentType(APPLICATION_JSON);
+        final var loginRequest = post(LOGIN_PATH)
+                .content(asJson(loginDto))
+                .contentType(APPLICATION_JSON);
         utils.perform(loginRequest).andExpect(status().isUnauthorized());
     }
 
@@ -149,7 +157,12 @@ public class UserControllerIT {
         final User findUser = userRepository.findByEmail(TEST_USERNAME_1);
         final Long userId = findUser.getId();
 
-        final var userDto = new UserRegistrationDto("new name", "new last name", TEST_USERNAME_2, "new pwd");
+        final var userDto = new UserRegistrationDto(
+                "new name",
+                "new last name",
+                TEST_USERNAME_2,
+                "new pwd"
+        );
 
         final var updateRequest = put(USERS_PATH + ID_PATH, userId)
                 .content(asJson(userDto))

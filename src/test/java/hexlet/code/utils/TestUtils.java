@@ -4,6 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.config.security.JwtTokenUtils;
+import hexlet.code.controllers.LabelController;
+import hexlet.code.controllers.TaskController;
+import hexlet.code.controllers.TaskStatusController;
+import hexlet.code.controllers.UserController;
 import hexlet.code.dto.LabelDto;
 import hexlet.code.dto.TaskDto;
 import hexlet.code.dto.TaskStatusDto;
@@ -13,16 +17,11 @@ import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.TaskStatusRepository;
 import hexlet.code.repository.UserRepository;
-import hexlet.code.controllers.LabelController;
-import hexlet.code.controllers.TaskController;
-import hexlet.code.controllers.TaskStatusController;
-import hexlet.code.controllers.UserController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import java.util.Collections;
 
@@ -118,28 +117,28 @@ public class TestUtils {
     }
 
     public ResultActions regUser(final UserRegistrationDto dto) throws Exception {
-        final var request = MockMvcRequestBuilders.post(UserController.USERS_PATH)
+        final var request = post(UserController.USERS_PATH)
                 .content(asJson(dto))
                 .contentType(APPLICATION_JSON);
         return perform(request);
     }
 
     public ResultActions createTaskStatus(final TaskStatusDto taskStatusDto) throws Exception {
-        final var request = MockMvcRequestBuilders.post(TaskStatusController.STATUSES_PATH)
+        final var request = post(TaskStatusController.STATUSES_PATH)
                 .content(asJson(taskStatusDto))
                 .contentType(APPLICATION_JSON);
         return perform(request, getUserByEmail(TEST_USERNAME_1));
     }
 
     public ResultActions createLabel(final LabelDto labelDto) throws Exception {
-        final var request = MockMvcRequestBuilders.post(LabelController.LABELS_PATH)
+        final var request = post(LabelController.LABELS_PATH)
                 .content(asJson(labelDto))
                 .contentType(APPLICATION_JSON);
         return perform(request, getUserByEmail(TEST_USERNAME_1));
     }
 
     public ResultActions createTask(final TaskDto taskDto) throws Exception {
-        final var request = MockMvcRequestBuilders.post(TaskController.TASKS_PATH)
+        final var request = post(TaskController.TASKS_PATH)
                 .content(asJson(taskDto))
                 .contentType(APPLICATION_JSON);
         return perform(request, getUserByEmail(TEST_USERNAME_1));
