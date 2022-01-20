@@ -62,8 +62,8 @@ public class UserController {
     @ApiResponse(responseCode = "201", description = "User registered")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void registrationUser(@RequestBody @Valid UserRegistrationDto userRegistrationDto) {
-        this.userService.registerUser(userRegistrationDto);
+    public User registrationUser(@RequestBody @Valid UserRegistrationDto userRegistrationDto) {
+        return this.userService.registerUser(userRegistrationDto);
     }
 
     @Operation(summary = "Delete user by his id")
@@ -79,10 +79,10 @@ public class UserController {
     @ApiResponse(responseCode = "200", description = "User updated")
     @PutMapping(ID_PATH)
     @PreAuthorize(ONLY_OWNER_BY_ID)
-    public void updateUser(@Parameter(description = "Id of user to be updated")
+    public User updateUser(@Parameter(description = "Id of user to be updated")
                            @PathVariable final long id,
                            @RequestBody @Valid UserRegistrationDto userRegistrationDto) {
-        this.userService.updateUser(id, userRegistrationDto);
+        return this.userService.updateUser(id, userRegistrationDto);
     }
 
 }

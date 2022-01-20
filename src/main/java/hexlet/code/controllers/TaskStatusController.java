@@ -57,9 +57,9 @@ public class TaskStatusController {
     @ApiResponse(responseCode = "201", description = "Task status created")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createTaskStatus(@Parameter(description = "Task status date to save")
-                                 @RequestBody @Valid TaskStatusDto taskStatusDto) {
-        this.taskStatusService.create(taskStatusDto);
+    public TaskStatus createTaskStatus(@Parameter(description = "Task status date to save")
+                                       @RequestBody @Valid TaskStatusDto taskStatusDto) {
+        return this.taskStatusService.create(taskStatusDto);
     }
 
     @Operation(summary = "Update task status by his id")
@@ -68,9 +68,10 @@ public class TaskStatusController {
             @ApiResponse(responseCode = "404", description = "Task status with that id not found")
     })
     @PutMapping(UserController.ID_PATH)
-    public void updateTaskStatus(@Parameter(description = "Id of task status to be updated")
-                                 @PathVariable final long id, @RequestBody @Valid TaskStatusDto taskStatusDto) {
-        this.taskStatusService.update(id, taskStatusDto);
+    public TaskStatus updateTaskStatus(@Parameter(description = "Id of task status to be updated")
+                                       @PathVariable final long id,
+                                       @RequestBody @Valid TaskStatusDto taskStatusDto) {
+        return this.taskStatusService.update(id, taskStatusDto);
     }
 
     @Operation(summary = "Delete task status by his id")

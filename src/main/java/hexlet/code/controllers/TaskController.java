@@ -57,16 +57,16 @@ public class TaskController {
     @ApiResponse(responseCode = "201", description = "Task created")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createTask(@RequestBody @Valid TaskDto taskDto) {
-        this.taskService.create(taskDto);
+    public Task createTask(@RequestBody @Valid TaskDto taskDto) {
+       return this.taskService.create(taskDto);
     }
 
     @Operation(summary = "Update task by his id")
     @ApiResponse(responseCode = "200", description = "Task updated")
     @PutMapping(ID_PATH)
-    public void updateTask(@Parameter(description = "Id of task to be updated")
+    public Task updateTask(@Parameter(description = "Id of task to be updated")
                            @PathVariable final long id, @RequestBody @Valid TaskDto taskDto) {
-        this.taskService.update(id, taskDto);
+        return this.taskService.update(id, taskDto);
     }
 
     @Operation(summary = "Delete task by his id")

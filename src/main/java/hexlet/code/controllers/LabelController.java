@@ -57,16 +57,16 @@ public class LabelController {
     @ApiResponse(responseCode = "201", description = "Label created")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createLabel(@RequestBody @Valid LabelDto labelDto) {
-        this.labelService.create(labelDto);
+    public Label createLabel(@RequestBody @Valid LabelDto labelDto) {
+       return this.labelService.create(labelDto);
     }
 
     @Operation(summary = "Update label by his id")
     @ApiResponse(responseCode = "200", description = "Label updated")
     @PutMapping(UserController.ID_PATH)
-    public void updateLabel(@Parameter(description = "Id of label to be found")
+    public Label updateLabel(@Parameter(description = "Id of label to be found")
                             @PathVariable final long id, @RequestBody @Valid LabelDto labelDto) {
-        this.labelService.update(id, labelDto);
+        return this.labelService.update(id, labelDto);
     }
 
     @Operation(summary = "Delete label by his id")
