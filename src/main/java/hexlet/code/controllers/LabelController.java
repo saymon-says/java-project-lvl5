@@ -23,10 +23,11 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 import static hexlet.code.controllers.LabelController.LABELS_PATH;
+import static hexlet.code.controllers.UserController.ID_PATH;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/${base-url}" + LABELS_PATH)
+@RequestMapping("${base-url}" + LABELS_PATH)
 public class LabelController {
 
     private LabelServiceImpl labelService;
@@ -47,7 +48,7 @@ public class LabelController {
             @ApiResponse(responseCode = "200", description = "Label found"),
             @ApiResponse(responseCode = "404", description = "Label with that id not found")
     })
-    @GetMapping(UserController.ID_PATH)
+    @GetMapping(ID_PATH)
     public Label getLabel(@Parameter(description = "Id of label to be found")
                           @PathVariable final long id) {
         return this.labelRepository.findById(id).get();
@@ -63,7 +64,7 @@ public class LabelController {
 
     @Operation(summary = "Update label by his id")
     @ApiResponse(responseCode = "200", description = "Label updated")
-    @PutMapping(UserController.ID_PATH)
+    @PutMapping(ID_PATH)
     public Label updateLabel(@Parameter(description = "Id of label to be found")
                             @PathVariable final long id, @RequestBody @Valid LabelDto labelDto) {
         return this.labelService.update(id, labelDto);
@@ -71,7 +72,7 @@ public class LabelController {
 
     @Operation(summary = "Delete label by his id")
     @ApiResponse(responseCode = "200", description = "Label deleted")
-    @DeleteMapping(UserController.ID_PATH)
+    @DeleteMapping(ID_PATH)
     public void deleteLabel(@Parameter(description = "Id of label to be found")
                             @PathVariable final long id) {
         this.labelRepository.deleteById(id);

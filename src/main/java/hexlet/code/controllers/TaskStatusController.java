@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 import static hexlet.code.controllers.TaskStatusController.STATUSES_PATH;
+import static hexlet.code.controllers.UserController.ID_PATH;
 
 @AllArgsConstructor
 @RestController
@@ -40,7 +41,7 @@ public class TaskStatusController {
             @ApiResponse(responseCode = "200", description = "Task status found"),
             @ApiResponse(responseCode = "404", description = "Task status with that id not found")
     })
-    @GetMapping(UserController.ID_PATH)
+    @GetMapping(ID_PATH)
     public TaskStatus getTaskStatus(@Parameter(description = "Id of task status to be found")
                                     @PathVariable final long id) {
         return this.taskStatusRepository.findById(id).get();
@@ -67,7 +68,7 @@ public class TaskStatusController {
             @ApiResponse(responseCode = "200", description = "Task status updated"),
             @ApiResponse(responseCode = "404", description = "Task status with that id not found")
     })
-    @PutMapping(UserController.ID_PATH)
+    @PutMapping(ID_PATH)
     public TaskStatus updateTaskStatus(@Parameter(description = "Id of task status to be updated")
                                        @PathVariable final long id,
                                        @RequestBody @Valid TaskStatusDto taskStatusDto) {
@@ -80,7 +81,7 @@ public class TaskStatusController {
             @ApiResponse(responseCode = "404", description = "Task status not found"),
             @ApiResponse(responseCode = "500", description = "Internal Server Error")
     })
-    @DeleteMapping(UserController.ID_PATH)
+    @DeleteMapping(ID_PATH)
     public void deleteTaskStatus(@Parameter(description = "Id of task status to be deleted")
                                  @PathVariable final long id) {
         this.taskStatusRepository.deleteById(id);

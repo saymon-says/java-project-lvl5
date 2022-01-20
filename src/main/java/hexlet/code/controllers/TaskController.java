@@ -30,7 +30,7 @@ import static hexlet.code.controllers.UserController.ID_PATH;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/${base-url}" + TASKS_PATH)
+@RequestMapping("${base-url}" + TASKS_PATH)
 public class TaskController {
 
     private TaskRepository taskRepository;
