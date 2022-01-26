@@ -1,8 +1,8 @@
 package hexlet.code.controllers;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -12,9 +12,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.NoSuchElementException;
 
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 
 @ResponseBody
 @ControllerAdvice
@@ -26,21 +27,27 @@ public class ExceptionController {
         return exception.getMessage();
     }
 
-    @ResponseStatus(INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(Exception.class)
+    @ResponseStatus(UNPROCESSABLE_ENTITY)
+    @ExceptionHandler(ConstraintViolationException.class)
     public String generalExceptionHandler(Exception exception) {
         return exception.getMessage();
     }
 
     @ResponseStatus(UNAUTHORIZED)
     @ExceptionHandler(UsernameNotFoundException.class)
-    public String userNitFoundExceptionHandler(UsernameNotFoundException exception) {
+    public String userNotFoundExceptionHandler(UsernameNotFoundException exception) {
         return exception.getMessage();
     }
 
-    @ResponseStatus(INTERNAL_SERVER_ERROR)
+    @ResponseStatus(UNPROCESSABLE_ENTITY)
     @ExceptionHandler({MethodArgumentNotValidException.class, HttpMessageNotReadableException.class})
-    public ResponseEntity<String> handleBindingErrors(Exception ex) {
-        return new ResponseEntity<>(ex.getMessage(), HttpStatus.UNPROCESSABLE_ENTITY);
+    public String handleBindingErrors(Exception ex) {
+        return ex.getMessage();
+    }
+
+    @ResponseStatus(FORBIDDEN)
+    @ExceptionHandler(AccessDeniedException.class)
+    public String accessDeniedException(Exception exception) {
+        return exception.getMessage();
     }
 }
