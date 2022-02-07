@@ -38,11 +38,13 @@ public class TaskServiceImpl implements TaskService {
     }
 
     private Task fillInTheTask(TaskDto taskDto, Task newTask) {
+        if (newTask.getAuthor() == null) {
+            newTask.setAuthor(userService.findByToken());
+        }
         newTask.setName(taskDto.getName());
         newTask.setTaskStatus(taskStatusRepository.findById(taskDto.getTaskStatusId()).get());
         newTask.setDescription(taskDto.getDescription());
         newTask.setExecutor(userRepository.findById(taskDto.getExecutorId()).orElse(null));
-        newTask.setAuthor(userService.findByToken());
         newTask.setLabels(labelRepository.findAllById(taskDto.getLabelIds()));
         return taskRepository.save(newTask);
     }
