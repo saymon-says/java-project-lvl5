@@ -203,7 +203,7 @@ public class UserControllerIT {
         final Long userId = findUser.getId();
 
         utils.perform(delete(USERS_PATH + ID_PATH, userId), findUser2)
-                .andExpect(status().is5xxServerError());
+                .andExpect(status().is4xxClientError());
 
         assertEquals(2, userRepository.count());
     }
