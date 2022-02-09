@@ -18,9 +18,6 @@ start-prod:
 install:
 	gradlew installDist
 
-start-dist:
-	/build/install/app/bin/app
-
 lint:
 	gradlew checkstyleMain checkstyleTest
 
